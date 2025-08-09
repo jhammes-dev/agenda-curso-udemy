@@ -1,3 +1,108 @@
-body {
-    background-color: #333;
+.navbar-brand img {
+    width: 80px;
+}
+
+#main-title {
+    text-align: center;
+    margin: 15px 0 30px;
+}
+
+/*HOME */
+
+#contacts-table {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+#contacts-table.table > thead > tr > th {
+    color: black;
+    background-color:   #0dcaf0;
+}
+
+.col-id {
+    font-weight: bold;
+}
+
+.actions {
+    text-align: left;
+    width: 150px;
+}
+
+.actions i {
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+.check-icon {
+    color: #2de7a9;
+}
+
+.edit-icon {
+    color: #09a1dd;
+}
+
+.delete-form {
+    display: inline-block;
+}
+
+.delete-icon {
+    color: #fd0000;
+}
+
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+#empty-list-text {
+    text-align: center;
+}
+
+#msg {
+    color: #058b0c;
+    background-color: #84e99b;
+    border: 2px solid #2eff04;
+    border-radius: 30px;
+    padding: 10px;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+/* CONTATOS INDIVIDUAL // CREATE */
+
+#view-contact-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#back-link-container {
+    display: block;
+    width: 500px;
+    margin: 30px auto 0;
+}
+
+#back-link {
+    border: 1px solid #00ffff;
+    color: #1db8b8;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+#back-link:hover {
+    text-decoration: none;
+}
+
+/* MOBILE*/
+
+@media(max-width: 500px){
+    #home-link {
+        display: none;
+    }
 }
