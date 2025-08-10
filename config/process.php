@@ -41,7 +41,7 @@ if (!empty($data)){
         }
 
     }
-    // EDITAR CONTATO
+    // EDITAR CONTATO // **CONTATOS EXCLUIDOS, QUE DEPOIS FOREM EDITADOS VOLTARÁ PARA ATIVO**
     else if ($data["type"] === "edit"){
 
         $nome = $data['nome'];
@@ -49,12 +49,14 @@ if (!empty($data)){
         $email = $data['email'];
         $observations = $data['observations'];
         $id = $data['id'];
+        $is_ativo = 1;
 
         $query = "UPDATE contacts 
                   SET nome = :nome, 
                   phone = :telefone, 
                   email = :email,
-                  observations = :observations
+                  observations = :observations,
+                  is_ativo = :is_ativo
                   WHERE id = :id";
 
         $stmt = $conn->prepare($query);
@@ -62,13 +64,13 @@ if (!empty($data)){
         $stmt->bindParam(":telefone" , $telefone);
         $stmt->bindParam(":email" , $email);
         $stmt->bindParam(":observations" , $observations);
+        $stmt->bindParam(":is_ativo" , $is_ativo);
         $stmt->bindParam(":id" , $id);
 
         try {
             $stmt->execute();
             $_SESSION['msg'] = "Contato Atualizado com Sucesso !!!";
             
-
         }catch(PDOException $e){
 
             // erro na conexão
@@ -78,20 +80,21 @@ if (!empty($data)){
 
     }
 
-    // DELETAR CONTATO
+    //  NÃO DELETA DO BANCO, DEIXA INATIVO
 
     else if ($data["type"] === "delete"){
 
         $id = $data['id'];
+        $is_ativo = 0;
 
-        $query = "DELETE FROM contacts WHERE id = :id";
+        $query = "UPDATE contacts SET is_ativo = :is_ativo WHERE id = :id";
         $stmt = $conn->prepare($query);
+        $stmt->bindParam(":is_ativo" , $is_ativo);
         $stmt->bindParam(":id" , $id);
 
         try {
             $stmt->execute();
-            $_SESSION['msg'] = " !!! Contato Deletado !!!";
-            
+            $_SESSION['msg'] = " !!! Contato Excluído !!!";
 
         }catch(PDOException $e){
 
@@ -99,15 +102,35 @@ if (!empty($data)){
             $error = $e->getMessage();
             echo "Erro: $error";
         }
-
-
     }
+    // DELETE PERMANENTEMENTE O CONTATO
+    else if ($data["type"] === "deleteds"){
 
+        $id = $data['id'];
+        $is_ativo = 2;
+
+        $query = "UPDATE contacts SET is_ativo = :is_ativo WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":is_ativo" , $is_ativo);
+        $stmt->bindParam(":id" , $id);
+
+        try {
+            $stmt->execute();
+            $_SESSION['msg'] = " !!! Contato Excluído Permanentemente !!!";
+
+        }catch(PDOException $e){
+
+            // erro na conexão
+            $error = $e->getMessage();
+            echo "Erro: $error";
+        }
+    }
 
     // REDIRECT HOME
     header("Location:" . $BASE_URL . "../home.php");
 
-    } else {
+    }
+     else {
         // SELEÇÃO DE DADOS
         
     $id;
@@ -116,9 +139,8 @@ if (!empty($data)){
         $id = $_GET["id"];
     }
 
-    // retorna dados de um contato
+    // RETORNA DADO DE UM CONTATO
     if(!empty($id)){
-
 
         $query = "SELECT * FROM contacts WHERE id = :id";
 
@@ -130,21 +152,44 @@ if (!empty($data)){
 
         $contact = $stmt->fetch();
 
-    } else {
+    }
 
-    // retorna todos os contatos
+    else {
+
+    // RETORNA TODOS OS CONTATOS ATIVOS COM iS_ATIVO = 1
 
         $contacts = [];
 
-        $query = "SELECT * FROM contacts";
+        $is_ativo = 1;
+
+
+        $query = "SELECT * FROM contacts WHERE is_ativo = :is_ativo";
 
         $stmt = $conn->prepare($query);
+
+        $stmt->bindParam(":is_ativo" , $is_ativo);
 
         $stmt->execute();
 
         $contacts = $stmt->fetchAll();
 
-    }
+
+        // RETORNA TODOS OS CONTATOS EXCLUIDOS COM IS_ATIVO = 0
+
+        $deleteds = [];
+
+        $is_ativo = 0;
+
+        $query = "SELECT * FROM contacts WHERE is_ativo = :is_ativo";
+
+        $stmt = $conn->prepare($query);
+
+        $stmt->bindParam(":is_ativo" , $is_ativo);
+
+        $stmt->execute();
+
+        $deleteds = $stmt->fetchAll();
+    } 
 }
 
 // FECHAR CONEXÃO
