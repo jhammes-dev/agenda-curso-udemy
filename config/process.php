@@ -107,11 +107,9 @@ if (!empty($data)){
     else if ($data["type"] === "deleteds"){
 
         $id = $data['id'];
-        $is_ativo = 2;
 
-        $query = "UPDATE contacts SET is_ativo = :is_ativo WHERE id = :id";
+        $query = "DELETE FROM contacts WHERE id = :id";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(":is_ativo" , $is_ativo);
         $stmt->bindParam(":id" , $id);
 
         try {
